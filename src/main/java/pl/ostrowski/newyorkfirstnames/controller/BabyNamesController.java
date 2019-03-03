@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ostrowski.newyorkfirstnames.facade.BabyNamesFacade;
+import pl.ostrowski.newyorkfirstnames.repository.BabyNamesRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -14,22 +15,22 @@ public class BabyNamesController {
   private final BabyNamesFacade babyNamesFacade;
 
   @Autowired
-  public BabyNamesController(BabyNamesFacade babyNamesFacade) {
-    this.babyNamesFacade = babyNamesFacade;
+  public BabyNamesController(BabyNamesRepository babyNamesRepository) {
+    this.babyNamesFacade = new BabyNamesFacade(babyNamesRepository);
   }
 
-  @GetMapping("elo1")
+  @GetMapping("queryTenMostPopularFirstNames")
   List<String> queryTenMostPopularFirstNames() {
     return babyNamesFacade.queryTenMostPopularFirstNames();
   }
 
-  @GetMapping("elo2")
+  @GetMapping("queryMostPopularFemaleName")
   String queryMostPopularFemaleName() {
     return babyNamesFacade.queryMostPopularFemaleName();
   }
 
-  @GetMapping("elo3")
-  Map<String, Integer> queryThreeMostPopularFirstCharactersWithCount() {
+  @GetMapping("queryThreeMostPopularFirstCharactersWithCount")
+  Map<Character, Integer> queryThreeMostPopularFirstCharactersWithCount() {
     return babyNamesFacade.queryThreeMostPopularFirstCharactersWithCount();
   }
 }

@@ -1,22 +1,28 @@
 package pl.ostrowski.newyorkfirstnames
 
+
 import pl.ostrowski.newyorkfirstnames.facade.BabyNamesFacade
+import pl.ostrowski.newyorkfirstnames.repository.BabyNamesRepository
+import pl.ostrowski.newyorkfirstnames.repository.InMemoryRepository
 import spock.lang.Specification
 
 class BabyNamesFacadeSpec extends Specification {
-    BabyNamesFacade babyNamesFacade = new BabyNamesFacade()
+
+    BabyNamesRepository babyNamesRepository = new InMemoryRepository()
+    BabyNamesFacade babyNamesFacade = new BabyNamesFacade(babyNamesRepository)
 
     def "should return ten most popular names"() {
         expect:
-        babyNamesFacade.queryTenMostPopularFirstNames() == ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] && babyNamesFacade.queryTenMostPopularFirstNames().size() == 10
+        babyNamesFacade.queryTenMostPopularFirstNames() == ["Thiago", "Daniel", "Audrey", "Fatima", "Gitty", "Georgia", "Lucia", "Louisa", "Tamar", "Maggie"] && babyNamesFacade.queryTenMostPopularFirstNames().size() == 10
     }
 
     def "should return most popular female name"() {
         expect:
-        babyNamesFacade.queryMostPopularFemaleName() == "Anna"
+        babyNamesFacade.queryMostPopularFemaleName() == "Audrey"
     }
 
     def "should return three most popular first characters of names with number of them"() {
-        expect: true
+        expect:
+        babyNamesFacade.queryThreeMostPopularFirstCharactersWithCount() == [('T' as Character): 1424, ('D' as Character): 1000, ('A' as Character): 304] && babyNamesFacade.queryThreeMostPopularFirstCharactersWithCount().size() == 3
     }
 }
