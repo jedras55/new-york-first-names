@@ -19,8 +19,8 @@ Zachęcam Cię do wrzucenia swojego rozwiązania np. na githuba a następnie pod
 # API
 Aplikacja została zrobiona w Spring Boocie, udostępnia API z trzema endpointami wyświetlającymi wymagane statystyki:
  - `/queryTenMostPopularFirstNames`
- - `/queryTenMostPopularFirstNames`
- - `/queryTenMostPopularFirstNames`
+ - `/queryMostPopularFemaleName`
+ - `/queryThreeMostPopularFirstCharactersWithCount`
 
 # Narzędzia
 - Lombok
