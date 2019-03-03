@@ -1,17 +1,21 @@
 package pl.ostrowski.newyorkfirstnames.repository;
 
-import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
 import pl.ostrowski.newyorkfirstnames.model.BabyNames;
 import pl.ostrowski.newyorkfirstnames.model.xml.BabyNamesXml;
+import pl.ostrowski.newyorkfirstnames.model.xml.BabyNamesXmlRoot;
 
-import java.io.FileReader;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -24,18 +28,22 @@ public class XmlRepository implements BabyNamesRepository {
   }
 
   private List<BabyNames> readFile() {
-    List<BabyNamesXml> babyNamesList = new ArrayList<>();
+    BabyNamesXmlRoot babyNamesXmlRoot = null;
     try {
-      babyNamesList =
-          new CsvToBeanBuilder(
-                  new FileReader(new ClassPathResource("Popular_Baby_Names.xml").getFile()))
-              .withType(BabyNamesXml.class)
-              .build()
-              .parse();
-    } catch (IOException e) {
+      File xmlFile = new ClassPathResource("Popular_Baby_Names.xml").getFile();
+      JAXBContext jaxbContext = JAXBContext.newInstance(BabyNamesXmlRoot.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      babyNamesXmlRoot = (BabyNamesXmlRoot) jaxbUnmarshaller.unmarshal(xmlFile);
+    } catch (IOException | JAXBException e) {
       log.error("Error: ", e);
     }
-    return babyNamesList.stream().map(this::parseBabyNames).collect(Collectors.toList());
+    return Optional.ofNullable(babyNamesXmlRoot)
+        .map(
+            root ->
+                root.getBabyNamesXmlWrapper().getBabyNamesXmlList().stream()
+                    .map(this::parseBabyNames)
+                    .collect(Collectors.toList()))
+        .orElse(new ArrayList<>());
   }
 
   private BabyNames parseBabyNames(BabyNamesXml babyNamesXml) {

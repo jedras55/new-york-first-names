@@ -2,8 +2,10 @@ package pl.ostrowski.newyorkfirstnames.model.csv;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode
 public class BabyNamesCsv {
   @CsvBindByName(column = "Year of Birth")
   private Integer yearOfBirth;

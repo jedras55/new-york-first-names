@@ -3,10 +3,12 @@ package pl.ostrowski.newyorkfirstnames.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Data
 @Builder
+@EqualsAndHashCode
 public class BabyNames {
   private Integer yearOfBirth;
   private Gender gender;
