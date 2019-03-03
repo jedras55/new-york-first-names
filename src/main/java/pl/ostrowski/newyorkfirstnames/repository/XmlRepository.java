@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
 import pl.ostrowski.newyorkfirstnames.model.BabyNames;
-import pl.ostrowski.newyorkfirstnames.model.csv.BabyNamesCsv;
+import pl.ostrowski.newyorkfirstnames.model.xml.BabyNamesXml;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,21 +15,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-@Profile("csv")
+@Profile("xml")
 @Slf4j
-public class CsvRepository implements BabyNamesRepository {
+public class XmlRepository implements BabyNamesRepository {
   @Override
   public List<BabyNames> findAll() {
     return readFile();
   }
 
   private List<BabyNames> readFile() {
-    List<BabyNamesCsv> babyNamesList = new ArrayList<>();
+    List<BabyNamesXml> babyNamesList = new ArrayList<>();
     try {
       babyNamesList =
           new CsvToBeanBuilder(
-                  new FileReader(new ClassPathResource("Popular_Baby_Names.csv").getFile()))
-              .withType(BabyNamesCsv.class)
+                  new FileReader(new ClassPathResource("Popular_Baby_Names.xml").getFile()))
+              .withType(BabyNamesXml.class)
               .build()
               .parse();
     } catch (IOException e) {
@@ -38,14 +38,14 @@ public class CsvRepository implements BabyNamesRepository {
     return babyNamesList.stream().map(this::parseBabyNames).collect(Collectors.toList());
   }
 
-  private BabyNames parseBabyNames(BabyNamesCsv babyNamesCsv) {
+  private BabyNames parseBabyNames(BabyNamesXml babyNamesXml) {
     return BabyNames.builder()
-        .yearOfBirth(babyNamesCsv.getYearOfBirth())
-        .gender(BabyNames.Gender.valueOf(babyNamesCsv.getGender()))
-        .ethnicity(BabyNames.Ethnicity.queryByValue(babyNamesCsv.getEthnicity()))
-        .firstName(babyNamesCsv.getFirstName())
-        .count(babyNamesCsv.getCount())
-        .rank(babyNamesCsv.getRank())
+        .yearOfBirth(babyNamesXml.getYearOfBirth())
+        .gender(BabyNames.Gender.valueOf(babyNamesXml.getGender()))
+        .ethnicity(BabyNames.Ethnicity.queryByValue(babyNamesXml.getEthnicity()))
+        .firstName(babyNamesXml.getFirstName())
+        .count(babyNamesXml.getCount())
+        .rank(babyNamesXml.getRank())
         .build();
   }
 }
